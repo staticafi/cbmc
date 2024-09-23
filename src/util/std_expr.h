@@ -3491,6 +3491,9 @@ public:
     operands().push_back(condition);
     operands().push_back(value);
   }
+
+  // a lowering to nested if_exprt
+  exprt lower() const;
 };
 
 template <>
