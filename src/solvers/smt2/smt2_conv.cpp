@@ -1220,12 +1220,9 @@ void smt2_convt::convert_expr(const exprt &expr)
 
     convert_expr(expr.operands().front());
   }
-  else if(expr.id()==ID_concatenation ||
-          expr.id()==ID_bitand ||
-          expr.id()==ID_bitor ||
-          expr.id()==ID_bitxor ||
-          expr.id()==ID_bitnand ||
-          expr.id()==ID_bitnor)
+  else if(
+    expr.id() == ID_concatenation || expr.id() == ID_bitand ||
+    expr.id() == ID_bitor || expr.id() == ID_bitxor)
   {
     DATA_INVARIANT_WITH_DIAGNOSTICS(
       expr.operands().size() >= 2,
@@ -1254,6 +1251,60 @@ void smt2_convt::convert_expr(const exprt &expr)
     }
 
     out << ")";
+  }
+  else if(
+    expr.id() == ID_bitxnor || expr.id() == ID_bitnand ||
+    expr.id() == ID_bitnor)
+  {
+    // SMT-LIB only has these as a binary expression,
+    // owing to their ambiguity.
+    if(expr.operands().size() == 2)
+    {
+      const auto &binary_expr = to_binary_expr(expr);
+
+      out << '(';
+      if(binary_expr.id() == ID_bitxnor)
+        out << "bvxnor";
+      else if(binary_expr.id() == ID_bitnand)
+        out << "bvnand";
+      else if(binary_expr.id() == ID_bitnor)
+        out << "bvnor";
+      out << ' ';
+      flatten2bv(binary_expr.op0());
+      out << ' ';
+      flatten2bv(binary_expr.op1());
+      out << ')';
+    }
+    else if(expr.operands().size() == 1)
+    {
+      out << "(bvnot ";
+      flatten2bv(to_unary_expr(expr).op());
+      out << ')';
+    }
+    else if(expr.operands().size() >= 3)
+    {
+      out << "(bvnot (";
+      if(expr.id() == ID_bitxnor)
+        out << "bvxor";
+      else if(expr.id() == ID_bitnand)
+        out << "bvand";
+      else if(expr.id() == ID_bitnor)
+        out << "bvor";
+
+      for(const auto &op : expr.operands())
+      {
+        out << ' ';
+        flatten2bv(op);
+      }
+
+      out << "))"; // bvX, bvnot
+    }
+    else
+    {
+      DATA_INVARIANT(
+        expr.operands().size() >= 1,
+        expr.id_string() + " should have at least one operand");
+    }
   }
   else if(expr.id()==ID_bitnot)
   {
