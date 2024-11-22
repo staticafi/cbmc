@@ -502,12 +502,12 @@ int foo()
 
 ## Loop Assigns Inference
 
-When loop invariants clauses are specified but loop assigns are not, CBMC will infer
+When loop invariant clauses are specified but loop assigns are not, CBMC will infer
 loop assigns clauses and use them to apply loop contracts. The idea of the inference
 is to include all the left hand side of assignments in the loop.
 
 For example, in the loop in the following function, we assume that only the loop
-invariants `i <= SIZE` is specified. Then CBMC will infer loop assigns targets `i`, `j`
+invariant `i <= SIZE` is specified. Then CBMC will infer loop assigns targets `i`, `j`
 and `__CPROVER_object_whole(b)` for the loop.
 
 ```
@@ -569,7 +569,7 @@ As an example, for assignment `ptr = box.ptr`, we cannot determine that `ptr`
 aliases `box.ptr`. And hence if we later write to `*ptr`, we will fail to
 infer the assigns target `__CPROVER_object_whole(box.ptr)`.
 
-However, the failed inference not result in unsound result.
+However, the failed inference does not result in unsoundness.
 That is, CBMC will report assignability-checks failure when the inferred
 assigns clauses are not accurate.
 
