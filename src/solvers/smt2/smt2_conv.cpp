@@ -2483,7 +2483,8 @@ void smt2_convt::convert_expr(const exprt &expr)
   else
     INVARIANT_WITH_DIAGNOSTICS(
       false,
-      "smt2_convt::convert_expr should not be applied to unsupported type",
+      "smt2_convt::convert_expr should not be applied to unsupported "
+      "expression",
       expr.id_string());
 }
 
