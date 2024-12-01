@@ -1831,6 +1831,14 @@ void smt2_convt::convert_expr(const exprt &expr)
       out << ")) #b1)"; // bvlshr, extract, =
     }
   }
+  else if(expr.id() == ID_onehot)
+  {
+    convert_expr(to_onehot_expr(expr).lower());
+  }
+  else if(expr.id() == ID_onehot0)
+  {
+    convert_expr(to_onehot0_expr(expr).lower());
+  }
   else if(expr.id()==ID_extractbits)
   {
     const extractbits_exprt &extractbits_expr = to_extractbits_expr(expr);

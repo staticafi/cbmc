@@ -412,8 +412,10 @@ literalt boolbvt::convert_rest(const exprt &expr)
           expr.id()==ID_reduction_nor || expr.id()==ID_reduction_nand ||
           expr.id()==ID_reduction_xor || expr.id()==ID_reduction_xnor)
     return convert_reduction(to_unary_expr(expr));
-  else if(expr.id()==ID_onehot || expr.id()==ID_onehot0)
-    return convert_onehot(to_unary_expr(expr));
+  else if(expr.id() == ID_onehot)
+    return convert_onehot(to_onehot_expr(expr));
+  else if(expr.id() == ID_onehot0)
+    return convert_onehot(to_onehot0_expr(expr));
   else if(
     const auto binary_overflow =
       expr_try_dynamic_cast<binary_overflow_exprt>(expr))

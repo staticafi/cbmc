@@ -306,3 +306,37 @@ exprt zero_extend_exprt::lower() const
     return extractbits_exprt{op(), 0, type()};
   }
 }
+
+static exprt onehot_lowering(const exprt &expr)
+{
+  exprt one_seen = false_exprt{};
+  const auto width = to_bitvector_type(expr.type()).get_width();
+  exprt::operandst more_than_one_seen_disjuncts;
+  more_than_one_seen_disjuncts.reserve(width);
+
+  for(std::size_t i = 0; i < width; i++)
+  {
+    auto bit = extractbit_exprt{expr, i};
+    more_than_one_seen_disjuncts.push_back(and_exprt{bit, one_seen});
+    one_seen = or_exprt{one_seen, bit};
+  }
+
+  auto more_than_one_seen = disjunction(more_than_one_seen_disjuncts);
+
+  return and_exprt{one_seen, not_exprt{more_than_one_seen}};
+}
+
+exprt onehot_exprt::lower() const
+{
+  auto symbol = symbol_exprt{"onehot-op", op().type()};
+
+  return let_exprt{symbol, op(), onehot_lowering(symbol)};
+}
+
+exprt onehot0_exprt::lower() const
+{
+  auto symbol = symbol_exprt{"onehot-op", op().type()};
+
+  // same as onehot, but on flipped operand bits
+  return let_exprt{symbol, bitnot_exprt{op()}, onehot_lowering(symbol)};
+}
