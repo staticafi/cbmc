@@ -1742,4 +1742,74 @@ inline zero_extend_exprt &to_zero_extend_expr(exprt &expr)
   return static_cast<zero_extend_exprt &>(expr);
 }
 
+/// \brief A Boolean expression returning true iff the given
+/// operand consists of exactly one '1' and '0' otherwise.
+class onehot_exprt : public unary_predicate_exprt
+{
+public:
+  explicit onehot_exprt(exprt _op)
+    : unary_predicate_exprt(ID_onehot, std::move(_op))
+  {
+  }
+
+  /// lowering to extractbit
+  exprt lower() const;
+};
+
+/// \brief Cast an exprt to a \ref onehot_exprt
+///
+/// \a expr must be known to be \ref onehot_exprt.
+///
+/// \param expr: Source expression
+/// \return Object of type \ref onehot_exprt
+inline const onehot_exprt &to_onehot_expr(const exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_onehot);
+  onehot_exprt::check(expr);
+  return static_cast<const onehot_exprt &>(expr);
+}
+
+/// \copydoc to_onehot_expr(const exprt &)
+inline onehot_exprt &to_onehot_expr(exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_onehot);
+  onehot_exprt::check(expr);
+  return static_cast<onehot_exprt &>(expr);
+}
+
+/// \brief A Boolean expression returning true iff the given
+/// operand consists of exactly one '0' and '1' otherwise.
+class onehot0_exprt : public unary_predicate_exprt
+{
+public:
+  explicit onehot0_exprt(exprt _op)
+    : unary_predicate_exprt(ID_onehot0, std::move(_op))
+  {
+  }
+
+  /// lowering to extractbit
+  exprt lower() const;
+};
+
+/// \brief Cast an exprt to a \ref onehot0_exprt
+///
+/// \a expr must be known to be \ref onehot0_exprt.
+///
+/// \param expr: Source expression
+/// \return Object of type \ref onehot0_exprt
+inline const onehot0_exprt &to_onehot0_expr(const exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_onehot0);
+  onehot0_exprt::check(expr);
+  return static_cast<const onehot0_exprt &>(expr);
+}
+
+/// \copydoc to_onehot0_expr(const exprt &)
+inline onehot0_exprt &to_onehot0_expr(exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_onehot0);
+  onehot0_exprt::check(expr);
+  return static_cast<onehot0_exprt &>(expr);
+}
+
 #endif // CPROVER_UTIL_BITVECTOR_EXPR_H
