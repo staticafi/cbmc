@@ -2299,6 +2299,11 @@ public:
     : multi_ary_exprt(std::move(_op0), ID_xor, std::move(_op1), bool_typet())
   {
   }
+
+  explicit xor_exprt(exprt::operandst _operands)
+    : multi_ary_exprt(ID_xor, std::move(_operands), bool_typet())
+  {
+  }
 };
 
 template <>
