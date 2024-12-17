@@ -1586,7 +1586,8 @@ void smt2_convt::convert_expr(const exprt &expr)
       // SMT2 requires the shift distance to have the same width as
       // the value that is shifted -- odd!
 
-      if(shift_expr.distance().type().id() == ID_integer)
+      const auto &distance_type = shift_expr.distance().type();
+      if(distance_type.id() == ID_integer || distance_type.id() == ID_natural)
       {
         const mp_integer i =
           numeric_cast_v<mp_integer>(to_constant_expr(shift_expr.distance()));
@@ -1597,13 +1598,12 @@ void smt2_convt::convert_expr(const exprt &expr)
         convert_expr(tmp);
       }
       else if(
-        shift_expr.distance().type().id() == ID_signedbv ||
-        shift_expr.distance().type().id() == ID_unsignedbv ||
-        shift_expr.distance().type().id() == ID_c_enum ||
-        shift_expr.distance().type().id() == ID_c_bool)
+        distance_type.id() == ID_signedbv ||
+        distance_type.id() == ID_unsignedbv ||
+        distance_type.id() == ID_c_enum || distance_type.id() == ID_c_bool)
       {
         std::size_t width_op0 = boolbv_width(shift_expr.op().type());
-        std::size_t width_op1 = boolbv_width(shift_expr.distance().type());
+        std::size_t width_op1 = boolbv_width(distance_type);
 
         if(width_op0==width_op1)
           convert_expr(shift_expr.distance());
@@ -1621,9 +1621,11 @@ void smt2_convt::convert_expr(const exprt &expr)
         }
       }
       else
+      {
         UNEXPECTEDCASE(
           "unsupported distance type for " + shift_expr.id_string() + ": " +
-          type.id_string());
+          distance_type.id_string());
+      }
 
       out << ")"; // bv*sh
     }
