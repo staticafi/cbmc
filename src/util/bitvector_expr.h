@@ -160,6 +160,50 @@ inline bitor_exprt &to_bitor_expr(exprt &expr)
   return static_cast<bitor_exprt &>(expr);
 }
 
+/// \brief Bit-wise NOR
+///
+/// When given one operand, this is equivalent to the bit-wise negation.
+/// When given three or more operands, this is equivalent to the bit-wise
+/// negation of the bitand expression with the same operands.
+class bitnor_exprt : public multi_ary_exprt
+{
+public:
+  bitnor_exprt(exprt _op0, exprt _op1)
+    : multi_ary_exprt(std::move(_op0), ID_bitnor, std::move(_op1))
+  {
+  }
+
+  bitnor_exprt(exprt::operandst _operands, typet _type)
+    : multi_ary_exprt(ID_bitnor, std::move(_operands), std::move(_type))
+  {
+  }
+};
+
+template <>
+inline bool can_cast_expr<bitnor_exprt>(const exprt &base)
+{
+  return base.id() == ID_bitnor;
+}
+
+/// \brief Cast an exprt to a \ref bitnor_exprt
+///
+/// \a expr must be known to be \ref bitnor_exprt.
+///
+/// \param expr: Source expression
+/// \return Object of type \ref bitnor_exprt
+inline const bitnor_exprt &to_bitnor_expr(const exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_bitnor);
+  return static_cast<const bitnor_exprt &>(expr);
+}
+
+/// \copydoc to_bitnor_expr(const exprt &)
+inline bitnor_exprt &to_bitnor_expr(exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_bitnor);
+  return static_cast<bitnor_exprt &>(expr);
+}
+
 /// \brief Bit-wise XOR
 class bitxor_exprt : public multi_ary_exprt
 {
@@ -201,11 +245,20 @@ inline bitxor_exprt &to_bitxor_expr(exprt &expr)
 }
 
 /// \brief Bit-wise XNOR
+///
+/// When given one operand, this is equivalent to the bit-wise negation.
+/// When given three or more operands, this is equivalent to the bit-wise
+/// negation of the bitxor expression with the same operands.
 class bitxnor_exprt : public multi_ary_exprt
 {
 public:
   bitxnor_exprt(exprt _op0, exprt _op1)
     : multi_ary_exprt(std::move(_op0), ID_bitxnor, std::move(_op1))
+  {
+  }
+
+  bitxnor_exprt(exprt::operandst _operands, typet _type)
+    : multi_ary_exprt(ID_bitxnor, std::move(_operands), std::move(_type))
   {
   }
 };
@@ -273,6 +326,50 @@ inline bitand_exprt &to_bitand_expr(exprt &expr)
 {
   PRECONDITION(expr.id() == ID_bitand);
   return static_cast<bitand_exprt &>(expr);
+}
+
+/// \brief Bit-wise NAND
+///
+/// When given one operand, this is equivalent to the bit-wise negation.
+/// When given three or more operands, this is equivalent to the bit-wise
+/// negation of the bitand expression with the same operands.
+class bitnand_exprt : public multi_ary_exprt
+{
+public:
+  bitnand_exprt(exprt _op0, exprt _op1)
+    : multi_ary_exprt(std::move(_op0), ID_bitnand, std::move(_op1))
+  {
+  }
+
+  bitnand_exprt(exprt::operandst _operands, typet _type)
+    : multi_ary_exprt(ID_bitnand, std::move(_operands), std::move(_type))
+  {
+  }
+};
+
+template <>
+inline bool can_cast_expr<bitnand_exprt>(const exprt &base)
+{
+  return base.id() == ID_bitnand;
+}
+
+/// \brief Cast an exprt to a \ref bitnand_exprt
+///
+/// \a expr must be known to be \ref bitnand_exprt.
+///
+/// \param expr: Source expression
+/// \return Object of type \ref bitnand_exprt
+inline const bitnand_exprt &to_bitnand_expr(const exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_bitnand);
+  return static_cast<const bitnand_exprt &>(expr);
+}
+
+/// \copydoc to_bitnand_expr(const exprt &)
+inline bitnand_exprt &to_bitnand_expr(exprt &expr)
+{
+  PRECONDITION(expr.id() == ID_bitnand);
+  return static_cast<bitnand_exprt &>(expr);
 }
 
 /// \brief A base class for shift and rotate operators
