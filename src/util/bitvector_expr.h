@@ -253,7 +253,7 @@ class bitxnor_exprt : public multi_ary_exprt
 {
 public:
   bitxnor_exprt(exprt _op0, exprt _op1)
-    : multi_ary_exprt(std::move(_op0), ID_bitxnor, std::move(_op1))
+    : multi_ary_exprt(_op0, ID_bitxnor, _op1, _op0.type())
   {
   }
 
@@ -278,6 +278,7 @@ inline bool can_cast_expr<bitxnor_exprt>(const exprt &base)
 inline const bitxnor_exprt &to_bitxnor_expr(const exprt &expr)
 {
   PRECONDITION(expr.id() == ID_bitxnor);
+  bitxnor_exprt::check(expr, validation_modet::INVARIANT);
   return static_cast<const bitxnor_exprt &>(expr);
 }
 
@@ -285,6 +286,7 @@ inline const bitxnor_exprt &to_bitxnor_expr(const exprt &expr)
 inline bitxnor_exprt &to_bitxnor_expr(exprt &expr)
 {
   PRECONDITION(expr.id() == ID_bitxnor);
+  bitxnor_exprt::check(expr, validation_modet::INVARIANT);
   return static_cast<bitxnor_exprt &>(expr);
 }
 
