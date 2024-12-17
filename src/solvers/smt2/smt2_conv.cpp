@@ -3568,9 +3568,11 @@ void smt2_convt::convert_relation(const binary_relation_exprt &expr)
 {
   const typet &op_type=expr.op0().type();
 
-  if(op_type.id()==ID_unsignedbv ||
-     op_type.id()==ID_bv)
+  if(
+    op_type.id() == ID_unsignedbv || op_type.id() == ID_bv ||
+    op_type.id() == ID_range)
   {
+    // The range type is encoded in binary
     out << "(";
     if(expr.id()==ID_le)
       out << "bvule";
