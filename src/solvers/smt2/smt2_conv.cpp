@@ -1413,6 +1413,38 @@ void smt2_convt::convert_expr(const exprt &expr)
     }
     out << ")";
   }
+  else if(expr.id() == ID_nand || expr.id() == ID_nor || expr.id() == ID_xnor)
+  {
+    DATA_INVARIANT(
+      expr.is_boolean(),
+      "logical nand, nor, xnor expressions should have Boolean type");
+    DATA_INVARIANT(
+      expr.operands().size() >= 1,
+      "logical nand, nor, xnor expressions should have at least one operand");
+
+    // SMT-LIB doesn't have nand, nor, xnor
+    out << "(not ";
+    if(expr.operands().size() == 1)
+      convert_expr(to_multi_ary_expr(expr).op0());
+    else
+    {
+      if(expr.id() == ID_nand)
+        out << "(and";
+      else if(expr.id() == ID_nor)
+        out << "(and";
+      else if(expr.id() == ID_xnor)
+        out << "(xor";
+      else
+        DATA_INVARIANT(false, "unexpected expression");
+      for(const auto &op : expr.operands())
+      {
+        out << ' ';
+        convert_expr(op);
+      }
+      out << ')'; // or, and, xor
+    }
+    out << ')'; // not
+  }
   else if(expr.id()==ID_implies)
   {
     const implies_exprt &implies_expr = to_implies_expr(expr);
