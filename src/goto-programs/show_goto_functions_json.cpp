@@ -51,6 +51,14 @@ json_objectt show_goto_functions_jsont::convert(
                        function_name.starts_with("java::java");
     json_function["isInternal"]=jsont::json_boolean(is_internal);
 
+    json_arrayt signature;
+    for (auto &identifier : function.parameter_identifiers) {
+      irept irep(identifier);
+      signature.push_back(no_comments_irep_converter.convert_from_irep(irep));
+    }
+
+    json_function["signature"] = std::move(signature);
+
     if(list_only)
       continue;
 
@@ -96,6 +104,21 @@ json_objectt show_goto_functions_jsont::convert(
               instruction.condition());
 
           instruction_entry["guard"] = std::move(guard_object);
+        }
+
+        if (instruction.is_target())
+        {
+          instruction_entry["target"] =
+            json_stringt(std::to_string(instruction.target_number));
+        }
+
+        if (instruction.is_goto())
+        {
+          json_arrayt targets;
+          for(auto &target : instruction.targets)
+            targets.push_back(json_stringt(std::to_string(target->target_number)));
+
+          instruction_entry["targetTo"] = std::move(targets);
         }
 
         json_instruction_array.push_back(std::move(instruction_entry));
